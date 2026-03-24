@@ -96,15 +96,25 @@ export default function Home() {
             <div className="rounded-[2.0rem] border border-[#D8D6D1] bg-[#E6E1D8] p-3 shadow-[0_20px_60px_rgba(31,30,28,0.08)]">
             <div className="relative w-[290px] overflow-hidden rounded-[1.0rem] border border-[#D8D6D1] bg-black sm:w-[320px]">
                 <video
-                  className="h-[590px] w-full object-cover sm:h-[650px]"
+                  className="h-[590px] w-full object-cover sm:h-[650px] pointer-events-none"
                   autoPlay
                   muted
                   loop
                   playsInline
-                  controls
                 >
                   <source src="/designiy-preview.mp4" type="video/mp4" />
                 </video>
+                <div
+                  className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#F7F6F3] px-6 text-center"
+                  aria-hidden="true"
+                >
+                  <p className="text-xs uppercase tracking-[0.28em] text-[#9C9A94]">
+                    Preview
+                  </p>
+                  <p className="mt-3 text-lg font-medium text-[#2E2E2C] sm:text-xl">
+                    Coming soon
+                  </p>
+                </div>
               </div>
             </div>
           </div>
