@@ -185,7 +185,7 @@ export default function Home() {
                 April 2026
               </p>
               <p className="mt-2 text-base text-[#2E2E2C]">
-                Added faster style matching based on swipe behavior.
+              Added a Design Brief feature which helps turn ideas into a clear plan with layout direction, style decisions, and next steps.
               </p>
             </div>
             <div className="rounded-xl border border-[#D8D6D1] bg-[#F7F6F3] p-5">
