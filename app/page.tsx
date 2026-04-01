@@ -142,7 +142,7 @@ export default function Home() {
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <a
-              href="tel:15165550283"
+              href="tel:16312920141"
               className="block rounded-xl bg-[#F7F6F3] p-6 border border-[#D8D6D1]"
             >
               <p className="text-sm text-[#6B6A66]">Phone</p>
