@@ -146,7 +146,7 @@ export default function Home() {
               className="block rounded-xl bg-[#F7F6F3] p-6 border border-[#D8D6D1]"
             >
               <p className="text-sm text-[#6B6A66]">Phone</p>
-              <p className="mt-2 text-lg text-[#2E2E2C]">(516) 555-0283</p>
+              <p className="mt-2 text-lg text-[#2E2E2C]">(631) 292-0141</p>
             </a>
 
             <a
