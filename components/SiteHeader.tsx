@@ -47,6 +47,38 @@ export default function SiteHeader() {
           Try DesigniY Now
         </a>
       </div>
+
+      <nav
+        className="md:hidden border-t border-[#D8D6D1]/80"
+        aria-label="Mobile navigation"
+      >
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-6 py-2 sm:px-10 lg:px-16">
+          <a
+            href="/#support"
+            className="text-sm text-[#6B6A66] transition hover:text-[#2E2E2C]"
+          >
+            Support
+          </a>
+          <a
+            href="/#updates"
+            className="text-sm text-[#6B6A66] transition hover:text-[#2E2E2C]"
+          >
+            Updates
+          </a>
+          <a
+            href="/privacy"
+            className="text-sm text-[#6B6A66] transition hover:text-[#2E2E2C]"
+          >
+            Privacy
+          </a>
+          <a
+            href="/terms"
+            className="text-sm text-[#6B6A66] transition hover:text-[#2E2E2C]"
+          >
+            Terms
+          </a>
+        </div>
+      </nav>
     </header>
   );
 }
