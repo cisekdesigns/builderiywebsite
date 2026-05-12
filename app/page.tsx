@@ -1,39 +1,9 @@
+import SiteHeader from "@/components/SiteHeader";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#F7F6F3] text-[#2E2E2C]">
-      <header className="sticky top-0 z-20 border-b border-[#D8D6D1]/80 bg-[#F7F6F3]/90 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-3 sm:px-10 lg:px-16">
-          <a
-            href="#"
-            className="text-lg tracking-[0.18em] text-[#2E2E2C]"
-            style={{ fontFamily: "Aboreto, serif" }}
-          >
-            DesigniY
-          </a>
-
-          <nav className="hidden items-center gap-8 md:flex">
-            <a
-              href="#support"
-              className="text-sm text-[#6B6A66] transition hover:text-[#2E2E2C]"
-            >
-              Support
-            </a>
-            <a
-              href="#updates"
-              className="text-sm text-[#6B6A66] transition hover:text-[#2E2E2C]"
-            >
-              Updates
-            </a>
-          </nav>
-
-          <a
-            href="#"
-            className="inline-flex items-center justify-center rounded-2xl border border-[#D8D6D1] bg-[#E6E1D8] px-5 py-2.5 text-sm font-medium text-[#2E2E2C] transition hover:bg-[#F7F6F3]"
-          >
-            Try DesigniY Now
-          </a>
-        </div>
-      </header>
+      <SiteHeader />
 
       <section className="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-7xl items-center px-6 py-6 sm:px-10 lg:px-16 lg:py-6">
         <div className="grid w-full gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
@@ -96,25 +66,15 @@ export default function Home() {
             <div className="rounded-[2.0rem] border border-[#D8D6D1] bg-[#E6E1D8] p-3 shadow-[0_20px_60px_rgba(31,30,28,0.08)]">
             <div className="relative w-[290px] overflow-hidden rounded-[1.0rem] border border-[#D8D6D1] bg-black sm:w-[320px]">
                 <video
-                  className="h-[590px] w-full object-cover sm:h-[650px] pointer-events-none"
+                  className="h-[590px] w-full object-cover sm:h-[650px]"
                   autoPlay
                   muted
                   loop
                   playsInline
+                  controls
                 >
                   <source src="/designiy-preview.mp4" type="video/mp4" />
                 </video>
-                <div
-                  className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#F7F6F3] px-6 text-center"
-                  aria-hidden="true"
-                >
-                  <p className="text-xs uppercase tracking-[0.28em] text-[#9C9A94]">
-                    Preview
-                  </p>
-                  <p className="mt-3 text-lg font-medium text-[#2E2E2C] sm:text-xl">
-                    Coming soon
-                  </p>
-                </div>
               </div>
             </div>
           </div>
