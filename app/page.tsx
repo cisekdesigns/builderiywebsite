@@ -51,7 +51,7 @@ export default function Home() {
 
               <div className="mt-6 flex justify-center">
                 <a
-                  href="#"
+                  href="https://apps.apple.com/us/app/designiy/id6760857302"
                   className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-black/40 px-10 py-4 text-lg font-semibold text-white backdrop-blur-md shadow-[0_12px_35px_rgba(0,0,0,0.35)] transition hover:bg-black/50"
                   style={{ fontFamily: "Aboreto, serif" }}
                 >

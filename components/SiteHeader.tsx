@@ -41,7 +41,7 @@ export default function SiteHeader() {
         </nav>
 
         <a
-          href="#"
+          href="https://apps.apple.com/us/app/designiy/id6760857302"
           className="inline-flex items-center justify-center rounded-2xl border border-[#D8D6D1] bg-[#E6E1D8] px-5 py-2.5 text-sm font-medium text-[#2E2E2C] transition hover:bg-[#F7F6F3]"
         >
           Try DesigniY Now
