@@ -142,6 +142,14 @@ export default function Home() {
           <div className="mt-8 grid max-h-[22rem] gap-4 overflow-y-auto pr-1">
             <div className="rounded-xl border border-[#D8D6D1] bg-[#F7F6F3] p-5">
               <p className="text-xs uppercase tracking-[0.18em] text-[#9C9A94]">
+                June 2026
+              </p>
+              <p className="mt-2 text-base text-[#2E2E2C]">
+                Completely refreshed the bathroom and living room swipe session image libraries with all-new design inspiration.
+              </p>
+            </div>
+            <div className="rounded-xl border border-[#D8D6D1] bg-[#F7F6F3] p-5">
+              <p className="text-xs uppercase tracking-[0.18em] text-[#9C9A94]">
                 May 2026
               </p>
               <p className="mt-2 text-base text-[#2E2E2C]">
