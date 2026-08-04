@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export default function SiteHeader() {
   return (
     <header className="sticky top-0 z-20 border-b border-[rgba(255,255,255,0.16)] bg-[#000000]/90 backdrop-blur">
@@ -9,13 +7,7 @@ export default function SiteHeader() {
           className="text-lg tracking-[0.18em] text-[#FFFFFF]"
           style={{ fontFamily: "Aboreto, serif" }}
         >
-          <Image
-            src="/builderiy-logo.svg"
-            alt="BuilderiY"
-            width={140}
-            height={28}
-            priority
-          />
+          BuilderiY
         </a>
 
         <nav className="hidden items-center gap-8 md:flex">

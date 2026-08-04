@@ -9,39 +9,39 @@ export default function Home() {
         <div className="grid w-full gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div className="max-w-3xl">
             <p className="mb-5 text-xs uppercase tracking-[0.28em] text-[#9A9A9A]">
-              Learn your design style in minutes
+              Full Step-by-Step Build Plans in Minutes
             </p>
 
             <h1
-              className="text-3xl leading-tight tracking-[0.04em] text-[#FFFFFF] sm:text-4xl lg:text-5xl"
+              className="text-3xl leading-tight tracking-[0.04em] text-[#FFFFFF] sm:text-4xl lg:text-4xl"
               style={{ fontFamily: "Aboreto, serif" }}
             >
               Plan Your Next DIY Project
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[#EDEBE4] sm:text-xl">
-              BuilderiY helps you plan, visualize, and complete DIY home improvement projects with confidence. Upload a photo, explore design ideas, and receive a complete step-by-step build plan tailored to your project.
+              BuilderiY helps you plan, visualize, and complete DIY home improvement projects with confidence. Upload a photo, describe your project, and receive a complete step-by-step build plan tailored to your idea.
             </p>
 
             <div className="mt-8 max-w-xl rounded-[1.75rem] border border-[#2A2A2A] bg-[#121212] p-6 pb-8">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-xl bg-[#1C1C1C] p-4">
                   <p className="text-sm text-[#FFFFFF]">
-                    “I've wanted an app like this for years. It gave me a complete project plan in minutes.”
+                    “It's like having an experienced contractor in your back pocket.”
                   </p>
                   <p className="mt-2 text-xs text-[#EDEBE4]">— Early user</p>
                 </div>
 
                 <div className="rounded-xl bg-[#1C1C1C] p-4">
                   <p className="text-sm text-[#FFFFFF]">
-                    “The build plan alone saved me hours of research. Everything was organized and easy to follow.”
+                    “If you're into DIY, this is definitely a must have app.”
                   </p>
                   <p className="mt-2 text-xs text-[#EDEBE4]">— Beta tester</p>
                 </div>
 
                 <div className="rounded-xl bg-[#1C1C1C] p-4 sm:col-span-2">
                   <p className="text-sm text-[#FFFFFF]">
-                    “I could finally visualize my project before buying materials. It made planning so much easier.”
+                    “Being able to see the project in my own space before building was a game changer.”
                   </p>
                   <p className="mt-2 text-xs text-[#EDEBE4]">— Early user</p>
                 </div>
@@ -143,7 +143,7 @@ export default function Home() {
                 July 2026
               </p>
               <p className="mt-2 text-base text-[#FFFFFF]">
-                BuilderiY V1 Launch — BuilderiY officially launched with AI-powered project visualization, complete build plans, Portfolio Agent, Project Agent, and Pro subscriptions.
+                BuilderiY Portfolio Agent: Our Portfolio Agent is now available for everyone, free to use.
               </p>
             </div>
             <div className="rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] p-5">
@@ -151,7 +151,7 @@ export default function Home() {
                 June 2026
               </p>
               <p className="mt-2 text-base text-[#FFFFFF]">
-                Build Plan Improvements — Added more detailed step-by-step build plans with improved material lists, tool recommendations, and clearer project instructions.
+                Build Plan Improvements: Added our BuilderiY Project Agent to answer all questions about your project.
               </p>
             </div>
             <div className="rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] p-5">
@@ -159,7 +159,7 @@ export default function Home() {
                 May 2026
               </p>
               <p className="mt-2 text-base text-[#FFFFFF]">
-                Expanded Inspiration Library — Added new DIY inspiration styles across kitchens, bathrooms, living rooms, bedrooms, patios, and outdoor spaces to help plan projects more easily.
+                Updated Build Plan Models: More detailed build plans with improved material lists and tool recommendations.
               </p>
             </div>
           </div>
@@ -172,13 +172,13 @@ export default function Home() {
 
           <div className="flex items-center gap-6">
             <a
-              href="#"
+              href="/privacy"
               className="text-sm text-[#EDEBE4] transition hover:text-[#FFFFFF]"
             >
               Privacy
             </a>
             <a
-              href="#"
+              href="/terms"
               className="text-sm text-[#EDEBE4] transition hover:text-[#FFFFFF]"
             >
               Terms

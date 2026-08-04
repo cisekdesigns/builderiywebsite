@@ -14,9 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://builderiy.app"),
   title: "BuilderiY",
   description: "Build your next DIY project with confidence.",
   applicationName: "BuilderiY",
+  alternates: {
+    canonical: "/",
+  },
   keywords: [
     "DIY",
     "home improvement",
@@ -30,6 +34,7 @@ export const metadata: Metadata = {
     title: "BuilderiY",
     description: "Build your next DIY project with confidence.",
     siteName: "BuilderiY",
+    url: "https://builderiy.app",
     type: "website",
   },
   twitter: {
