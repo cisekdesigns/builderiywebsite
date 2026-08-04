@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function SiteHeader() {
   return (
     <header className="sticky top-0 z-20 border-b border-[#D8D6D1]/80 bg-[#F7F6F3]/90 backdrop-blur">
@@ -7,7 +9,13 @@ export default function SiteHeader() {
           className="text-lg tracking-[0.18em] text-[#2E2E2C]"
           style={{ fontFamily: "Aboreto, serif" }}
         >
-          DesigniY
+          <Image
+            src="/builderiy-logo.svg"
+            alt="BuilderiY"
+            width={140}
+            height={28}
+            priority
+          />
         </a>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -41,10 +49,10 @@ export default function SiteHeader() {
         </nav>
 
         <a
-          href="https://apps.apple.com/us/app/designiy/id6760857302"
+          href="https://builderiy.app"
           className="inline-flex items-center justify-center rounded-2xl border border-[#D8D6D1] bg-[#E6E1D8] px-5 py-2.5 text-sm font-medium text-[#2E2E2C] transition hover:bg-[#F7F6F3]"
         >
-          Try DesigniY Now
+          Try BuilderiY Now
         </a>
       </div>
 

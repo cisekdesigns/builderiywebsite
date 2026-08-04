@@ -34,7 +34,7 @@ export default function PrivacyPage() {
   
               <div className="rounded-[2rem] border border-[#D8D6D1] bg-[#E6E1D8] p-8 space-y-8">
                 <p className="text-base leading-7 text-[#6B6A66]">
-                  DesigniY collects and uses information to operate the app,
+                  BuilderiY collects and uses information to operate the app,
                   generate AI-powered design experiences, and improve product
                   performance.
                 </p>
@@ -255,7 +255,7 @@ export default function PrivacyPage() {
   
               <div className="rounded-[2rem] border border-[#D8D6D1] bg-[#E6E1D8] p-8">
                 <p className="text-base leading-7 text-[#6B6A66]">
-                  DesigniY is not intended for children under 13, and we do
+                  BuilderiY is not intended for children under 13, and we do
                   not knowingly collect personal information from children
                   under 13.
                 </p>
@@ -288,7 +288,7 @@ export default function PrivacyPage() {
                 </p>
   
                 <p className="mt-4 text-xl text-[#2E2E2C]">
-                  support@designiy.app
+                  support@builderiy.app
                 </p>
               </div>
             </section>

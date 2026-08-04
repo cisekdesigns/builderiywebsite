@@ -34,7 +34,7 @@ export default function TermsPage() {
   
               <div className="rounded-[2rem] border border-[#D8D6D1] bg-[#E6E1D8] p-8">
                 <p className="text-base leading-7 text-[#6B6A66]">
-                  By accessing or using DesigniY, you agree to these Terms
+                  By accessing or using BuilderiY, you agree to these Terms
                   of Service. If you do not agree, do not use the app.
                 </p>
               </div>
@@ -48,7 +48,7 @@ export default function TermsPage() {
   
               <div className="rounded-[2rem] border border-[#D8D6D1] bg-[#E6E1D8] p-8">
                 <p className="text-base leading-7 text-[#6B6A66]">
-                  DesigniY provides AI-powered design discovery,
+                  BuilderiY provides AI-powered design discovery,
                   personalization, and concept generation tools. You agree
                   to use the app only in compliance with applicable laws
                   and these terms.
@@ -82,7 +82,7 @@ export default function TermsPage() {
                   You may provide content such as images, prompts,
                   preferences, and project data. You retain rights to your
                   content to the extent permitted by law, but you grant
-                  DesigniY a worldwide, non-exclusive license to use,
+                  BuilderiY a worldwide, non-exclusive license to use,
                   host, store, process, and display that content to
                   operate and improve the service. You represent and
                   warrant that you have all necessary rights,
@@ -100,7 +100,7 @@ export default function TermsPage() {
   
               <div className="rounded-[2rem] border border-[#D8D6D1] bg-[#E6E1D8] p-8">
                 <p className="text-base leading-7 text-[#6B6A66]">
-                  DesigniY may generate visual and written outputs based
+                  BuilderiY may generate visual and written outputs based
                   on your inputs. Outputs are provided for inspiration and
                   planning purposes only and are not professional
                   architectural, engineering, construction, legal, or
@@ -120,8 +120,8 @@ export default function TermsPage() {
                 </p>
   
                 <p className="mt-8 text-base leading-7 text-[#6B6A66]">
-                  As between you and DesigniY, and to the extent permitted
-                  by law, you own the generated outputs. DesigniY makes no
+                  As between you and BuilderiY, and to the extent permitted
+                  by law, you own the generated outputs. BuilderiY makes no
                   representations regarding the availability of
                   intellectual property protection for such outputs.
                 </p>
@@ -227,8 +227,8 @@ export default function TermsPage() {
   
               <div className="rounded-[2rem] border border-[#D8D6D1] bg-[#E6E1D8] p-8">
                 <p className="text-base leading-7 text-[#6B6A66]">
-                  The DesigniY app, software, branding, and related
-                  materials are owned by DesigniY or its licensors and are
+                  The BuilderiY app, software, branding, and related
+                  materials are owned by BuilderiY or its licensors and are
                   protected by intellectual property laws.
                 </p>
               </div>
@@ -258,7 +258,7 @@ export default function TermsPage() {
   
               <div className="rounded-[2rem] border border-[#D8D6D1] bg-[#E6E1D8] p-8">
                 <p className="text-base leading-7 text-[#6B6A66]">
-                  To the maximum extent permitted by law, DesigniY is not
+                  To the maximum extent permitted by law, BuilderiY is not
                   liable for indirect, incidental, special,
                   consequential, or punitive damages, including loss of
                   data, profits, or business.
@@ -289,7 +289,7 @@ export default function TermsPage() {
   
               <div className="rounded-[2rem] border border-[#D8D6D1] bg-[#E6E1D8] p-8">
                 <p className="text-base leading-7 text-[#6B6A66]">
-                  You agree to indemnify and hold harmless DesigniY from
+                  You agree to indemnify and hold harmless BuilderiY from
                   any claims, damages, or expenses arising from your use
                   of the app or violation of these terms.
                 </p>
@@ -350,7 +350,7 @@ export default function TermsPage() {
                 </p>
   
                 <p className="mt-4 text-xl text-[#2E2E2C]">
-                  support@designiy.app
+                  support@builderiy.app
                 </p>
               </div>
             </section>

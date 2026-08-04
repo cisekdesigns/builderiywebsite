@@ -16,34 +16,32 @@ export default function Home() {
               className="text-3xl leading-tight tracking-[0.04em] text-[#2E2E2C] sm:text-4xl lg:text-5xl"
               style={{ fontFamily: "Aboreto, serif" }}
             >
-              Bringing fun back to designing your home.
+              Plan Your Next DIY Project
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[#6B6A66] sm:text-xl">
-              Explore design ideas the easy way. Swipe through visuals, react to
-              what you like, and DesigniY helps uncover the style that fits your
-              home.
+              BuilderiY helps you plan, visualize, and complete DIY home improvement projects with confidence. Upload a photo, explore design ideas, and receive a complete step-by-step build plan tailored to your project.
             </p>
 
             <div className="mt-8 max-w-xl rounded-[1.75rem] border border-[#D8D6D1] bg-[#E6E1D8] p-6 pb-8">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-xl bg-[#F7F6F3] p-4">
                   <p className="text-sm text-[#2E2E2C]">
-                    “Easiest design app I've ever used.”
+                    “I've wanted an app like this for years. It gave me a complete project plan in minutes.”
                   </p>
                   <p className="mt-2 text-xs text-[#6B6A66]">— Early user</p>
                 </div>
 
                 <div className="rounded-xl bg-[#F7F6F3] p-4">
                   <p className="text-sm text-[#2E2E2C]">
-                    “You'll end up doing every room in your house, then your entire backyard.”
+                    “The build plan alone saved me hours of research. Everything was organized and easy to follow.”
                   </p>
                   <p className="mt-2 text-xs text-[#6B6A66]">— Beta tester</p>
                 </div>
 
                 <div className="rounded-xl bg-[#F7F6F3] p-4 sm:col-span-2">
                   <p className="text-sm text-[#2E2E2C]">
-                    “Finally a design app that gives realistic results and keeps your room dimensions.”
+                    “I could finally visualize my project before buying materials. It made planning so much easier.”
                   </p>
                   <p className="mt-2 text-xs text-[#6B6A66]">— Early user</p>
                 </div>
@@ -51,11 +49,11 @@ export default function Home() {
 
               <div className="mt-6 flex justify-center">
                 <a
-                  href="https://apps.apple.com/us/app/designiy/id6760857302"
+                  href="https://builderiy.app"
                   className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-black/40 px-10 py-4 text-lg font-semibold text-white backdrop-blur-md shadow-[0_12px_35px_rgba(0,0,0,0.35)] transition hover:bg-black/50"
                   style={{ fontFamily: "Aboreto, serif" }}
                 >
-                  Try DesigniY Now
+                  Try BuilderiY Now
                 </a>
               </div>
             </div>
@@ -73,7 +71,7 @@ export default function Home() {
                   playsInline
                   controls
                 >
-                  <source src="/designiy-preview.mp4" type="video/mp4" />
+                  <source src="/builderiy-preview.mp4" type="video/mp4" />
                 </video>
               </div>
             </div>
@@ -110,12 +108,12 @@ export default function Home() {
             </a>
 
             <a
-              href="mailto:support@designiy.app"
+              href="mailto:support@builderiy.app"
               className="block rounded-xl bg-[#F7F6F3] p-6 border border-[#D8D6D1]"
             >
               <p className="text-sm text-[#6B6A66]">Email</p>
               <p className="mt-2 text-lg text-[#2E2E2C]">
-                support@designiy.app
+                support@builderiy.app
               </p>
             </a>
           </div>
@@ -132,7 +130,7 @@ export default function Home() {
               className="mt-4 text-3xl leading-tight tracking-[0.04em] text-[#2E2E2C] sm:text-4xl"
               style={{ fontFamily: "Aboreto, serif" }}
             >
-              What’s new in DesigniY.
+              What’s new in BuilderiY.
             </h2>
             <p className="mt-5 text-base leading-7 text-[#6B6A66] sm:text-lg">
               Follow product progress, feature drops, and quality improvements as we ship.
@@ -145,7 +143,7 @@ export default function Home() {
                 July 2026
               </p>
               <p className="mt-2 text-base text-[#2E2E2C]">
-                Released DesigniY V2 with a redesigned experience, improved performance, enhanced image generation, and new features across the app.
+                BuilderiY V1 Launch — BuilderiY officially launched with AI-powered project visualization, complete build plans, Portfolio Agent, Project Agent, and Pro subscriptions.
               </p>
             </div>
             <div className="rounded-xl border border-[#D8D6D1] bg-[#F7F6F3] p-5">
@@ -153,7 +151,7 @@ export default function Home() {
                 June 2026
               </p>
               <p className="mt-2 text-base text-[#2E2E2C]">
-                Completely refreshed the bathroom and living room swipe session image libraries with all-new design inspiration.
+                Build Plan Improvements — Added more detailed step-by-step build plans with improved material lists, tool recommendations, and clearer project instructions.
               </p>
             </div>
             <div className="rounded-xl border border-[#D8D6D1] bg-[#F7F6F3] p-5">
@@ -161,47 +159,7 @@ export default function Home() {
                 May 2026
               </p>
               <p className="mt-2 text-base text-[#2E2E2C]">
-                Expanded swipe session image libraries and upgraded image generation for more realistic design results.
-              </p>
-            </div>
-            <div className="rounded-xl border border-[#D8D6D1] bg-[#F7F6F3] p-5">
-              <p className="text-xs uppercase tracking-[0.18em] text-[#9C9A94]">
-                April 2026
-              </p>
-              <p className="mt-2 text-base text-[#2E2E2C]">
-              Added a Design Brief feature which helps turn ideas into a clear plan with layout direction, style decisions, and next steps.
-              </p>
-            </div>
-            <div className="rounded-xl border border-[#D8D6D1] bg-[#F7F6F3] p-5">
-              <p className="text-xs uppercase tracking-[0.18em] text-[#9C9A94]">
-                March 2026
-              </p>
-              <p className="mt-2 text-base text-[#2E2E2C]">
-                Improved room-dimension handling for more realistic results.
-              </p>
-            </div>
-            <div className="rounded-xl border border-[#D8D6D1] bg-[#F7F6F3] p-5">
-              <p className="text-xs uppercase tracking-[0.18em] text-[#9C9A94]">
-                February 2026
-              </p>
-              <p className="mt-2 text-base text-[#2E2E2C]">
-                Updated the onboarding flow to help users start projects faster.
-              </p>
-            </div>
-            <div className="rounded-xl border border-[#D8D6D1] bg-[#F7F6F3] p-5">
-              <p className="text-xs uppercase tracking-[0.18em] text-[#9C9A94]">
-                January 2026
-              </p>
-              <p className="mt-2 text-base text-[#2E2E2C]">
-                Improved swipe responsiveness and reduced loading time between cards.
-              </p>
-            </div>
-            <div className="rounded-xl border border-[#D8D6D1] bg-[#F7F6F3] p-5">
-              <p className="text-xs uppercase tracking-[0.18em] text-[#9C9A94]">
-                December 2025
-              </p>
-              <p className="mt-2 text-base text-[#2E2E2C]">
-                Added better project setup guidance for first-time users.
+                Expanded Inspiration Library — Added new DIY inspiration styles across kitchens, bathrooms, living rooms, bedrooms, patios, and outdoor spaces to help plan projects more easily.
               </p>
             </div>
           </div>
@@ -210,7 +168,7 @@ export default function Home() {
 
       <footer className="border-t border-[#D8D6D1] px-6 py-8 sm:px-10 lg:px-16">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-[#9C9A94]">© 2026 DesigniY</p>
+          <p className="text-sm text-[#9C9A94]">© 2026 BuilderiY</p>
 
           <div className="flex items-center gap-6">
             <a
@@ -226,10 +184,10 @@ export default function Home() {
               Terms
             </a>
             <a
-              href="mailto:support@designiy.app"
+              href="mailto:support@builderiy.app"
               className="text-sm text-[#6B6A66] transition hover:text-[#2E2E2C]"
             >
-              support@designiy.app
+              support@builderiy.app
             </a>
           </div>
         </div>
