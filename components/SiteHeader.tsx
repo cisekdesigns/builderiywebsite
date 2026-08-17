@@ -41,7 +41,7 @@ export default function SiteHeader() {
         </nav>
 
         <a
-          href="https://builderiy.app"
+          href="https://apps.apple.com/us/app/builderiy/id6783095666"
           className="inline-flex items-center justify-center rounded-2xl border border-[#D8D6D1] bg-[#E6E1D8] px-5 py-2.5 text-sm font-medium text-[#1F1E1C] transition hover:bg-[#EDEBE4]"
         >
           Try BuilderiY Now
