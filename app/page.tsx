@@ -184,6 +184,12 @@ export default function Home() {
               Terms
             </a>
             <a
+              href="/delete-account"
+              className="text-sm text-[#EDEBE4] transition hover:text-[#FFFFFF]"
+            >
+              Delete Account
+            </a>
+            <a
               href="mailto:support@builderiy.app"
               className="text-sm text-[#EDEBE4] transition hover:text-[#FFFFFF]"
             >
