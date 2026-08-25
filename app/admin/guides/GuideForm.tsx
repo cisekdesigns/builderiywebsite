@@ -150,13 +150,8 @@ export default function GuideForm({
   const [clientError, setClientError] = useState<string | null>(null);
 
   const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
-  const ALLOWED_IMAGE_TYPES = new Set([
-    "image/jpeg",
-    "image/jpg",
-    "image/png",
-    "image/webp",
-    "image/gif",
-  ]);
+  const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png"]);
+  const IMAGE_TYPE_ERROR = "Please upload a JPEG or PNG image.";
 
   function validateImageFiles(form: HTMLFormElement): string | null {
     const inputs = form.querySelectorAll<HTMLInputElement>(
@@ -166,7 +161,7 @@ export default function GuideForm({
       const file = input.files?.[0];
       if (!file || file.size === 0) continue;
       if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
-        return `"${file.name}" must be a JPEG, PNG, WebP, or GIF image.`;
+        return IMAGE_TYPE_ERROR;
       }
       if (file.size > MAX_IMAGE_BYTES) {
         return `"${file.name}" is larger than 10 MB. Please choose a smaller image.`;
@@ -373,7 +368,7 @@ export default function GuideForm({
           <input
             type="file"
             name="hero_image"
-            accept="image/*"
+            accept="image/jpeg,image/png"
             className="mt-2 block w-full text-sm text-[#EDEBE4]"
             onChange={(e) => {
               const file = e.target.files?.[0];
@@ -570,7 +565,7 @@ export default function GuideForm({
             <input
               type="file"
               name={`step_image_${index}`}
-              accept="image/*"
+              accept="image/jpeg,image/png"
               className="block w-full text-sm text-[#EDEBE4]"
               onChange={(e) => {
                 const file = e.target.files?.[0];
@@ -671,7 +666,7 @@ export default function GuideForm({
           <input
             type="file"
             name="viz_reference_image"
-            accept="image/*"
+            accept="image/jpeg,image/png"
             className="mt-2 block w-full text-sm text-[#EDEBE4]"
             onChange={(e) => {
               const file = e.target.files?.[0];

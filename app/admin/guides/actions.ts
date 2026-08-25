@@ -50,18 +50,32 @@ function parseStepsMeta(raw: string): Array<{
   return JSON.parse(raw || "[]");
 }
 
+const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png"]);
+const IMAGE_TYPE_ERROR = "Please upload a JPEG or PNG image.";
+
+function isUploadedFile(value: FormDataEntryValue | null): value is File {
+  return value instanceof File && value.size > 0;
+}
+
+function assertAllowedImage(file: File) {
+  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+    throw new Error(IMAGE_TYPE_ERROR);
+  }
+}
+
 async function uploadImage(
   supabase: Awaited<ReturnType<typeof requireGuideAdmin>>["supabase"],
   file: File | null,
   path: string,
 ): Promise<string | null> {
   if (!file || file.size === 0) return null;
+  assertAllowedImage(file);
 
   const { error } = await supabase.storage
     .from(GUIDE_IMAGES_BUCKET)
     .upload(path, file, {
       upsert: false,
-      contentType: file.type || "image/jpeg",
+      contentType: file.type,
     });
 
   if (error) {
@@ -109,14 +123,31 @@ export async function saveGuide(formData: FormData) {
   const tools = parseTools(String(formData.get("tools_json") || "[]"));
   const stepsMeta = parseStepsMeta(String(formData.get("steps_json") || "[]"));
 
-  try {
-    const heroFile = formData.get("hero_image");
-    const vizFile = formData.get("viz_reference_image");
+  const heroFile = formData.get("hero_image");
+  const vizFile = formData.get("viz_reference_image");
 
+  const uploadedImages: File[] = [];
+  if (isUploadedFile(heroFile)) uploadedImages.push(heroFile);
+  if (isUploadedFile(vizFile)) uploadedImages.push(vizFile);
+  for (let i = 0; i < stepsMeta.length; i += 1) {
+    const stepFile = formData.get(`step_image_${i}`);
+    if (isUploadedFile(stepFile)) uploadedImages.push(stepFile);
+  }
+  for (const file of uploadedImages) {
+    if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+      redirect(
+        existingId
+          ? `/admin/guides/${existingId}?error=${encodeURIComponent(IMAGE_TYPE_ERROR)}`
+          : `/admin/guides/new?error=${encodeURIComponent(IMAGE_TYPE_ERROR)}`,
+      );
+    }
+  }
+
+  try {
     let heroImagePath = existingHero || null;
     let vizReferencePathValue = existingViz || null;
 
-    if (heroFile instanceof File && heroFile.size > 0) {
+    if (isUploadedFile(heroFile)) {
       const path = heroPath(
         guideId,
         extensionFromFile(heroFile),
@@ -125,7 +156,7 @@ export async function saveGuide(formData: FormData) {
       heroImagePath = await uploadImage(supabase, heroFile, path);
     }
 
-    if (vizFile instanceof File && vizFile.size > 0) {
+    if (isUploadedFile(vizFile)) {
       const path = vizReferencePath(
         guideId,
         extensionFromFile(vizFile),
@@ -144,7 +175,7 @@ export async function saveGuide(formData: FormData) {
 
       let imagePath = String(meta.existingImagePath || "").trim() || null;
       const stepFile = formData.get(`step_image_${i}`);
-      if (stepFile instanceof File && stepFile.size > 0) {
+      if (isUploadedFile(stepFile)) {
         const path = stepImagePath(
           guideId,
           i,
