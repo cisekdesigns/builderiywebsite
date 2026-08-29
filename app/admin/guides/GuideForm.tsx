@@ -42,6 +42,7 @@ type NewGuideDraft = {
     toolsText: string;
   }>;
   viz_dimensions: string;
+  viz_placement_enabled: boolean;
   viz_question_2: string;
   viz_question_3: string;
   is_published: boolean;
@@ -103,6 +104,9 @@ export default function GuideForm({
   const [overview, setOverview] = useState(guide?.overview || "");
   const [vizDimensions, setVizDimensions] = useState(
     guide?.viz_dimensions || "",
+  );
+  const [vizPlacementEnabled, setVizPlacementEnabled] = useState(
+    guide?.viz_placement_enabled === true,
   );
   const [vizQuestion2, setVizQuestion2] = useState(guide?.viz_question_2 || "");
   const [vizQuestion3, setVizQuestion3] = useState(guide?.viz_question_3 || "");
@@ -191,6 +195,7 @@ export default function GuideForm({
       setTitle(draft.title || "");
       setOverview(draft.overview || "");
       setVizDimensions(draft.viz_dimensions || "");
+      setVizPlacementEnabled(draft.viz_placement_enabled === true);
       setVizQuestion2(draft.viz_question_2 || "");
       setVizQuestion3(draft.viz_question_3 || "");
       setIsPublished(Boolean(draft.is_published));
@@ -248,6 +253,7 @@ export default function GuideForm({
         toolsText: s.toolsText,
       })),
       viz_dimensions: vizDimensions,
+      viz_placement_enabled: vizPlacementEnabled,
       viz_question_2: vizQuestion2,
       viz_question_3: vizQuestion3,
       is_published: isPublished,
@@ -268,6 +274,7 @@ export default function GuideForm({
     tools,
     steps,
     vizDimensions,
+    vizPlacementEnabled,
     vizQuestion2,
     vizQuestion3,
     isPublished,
@@ -699,6 +706,21 @@ export default function GuideForm({
             className="mt-2 w-full rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] px-4 py-3 text-[#EDEBE4] outline-none focus:border-[#D8D6D1]"
           />
         </label>
+        <input type="hidden" name="viz_placement_enabled" value="false" />
+        <label className="flex items-center gap-3 text-sm text-[#EDEBE4]">
+          <input
+            type="checkbox"
+            name="viz_placement_enabled"
+            value="true"
+            checked={vizPlacementEnabled}
+            onChange={(e) => setVizPlacementEnabled(e.target.checked)}
+            className="h-4 w-4"
+          />
+          ENABLE PLACEMENT AREA
+        </label>
+        <p className="text-xs text-[#9A9A9A]">
+          Ask users to mark where the project should appear in their space.
+        </p>
         <div className="rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] p-4">
           <p className="text-xs uppercase tracking-[0.18em] text-[#9A9A9A]">
             Question 1 (global — not editable)

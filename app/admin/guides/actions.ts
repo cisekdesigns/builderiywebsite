@@ -92,6 +92,8 @@ export async function saveGuide(formData: FormData) {
   const title = String(formData.get("title") || "").trim();
   const overview = String(formData.get("overview") || "").trim();
   const vizDimensions = String(formData.get("viz_dimensions") || "").trim();
+  const vizPlacementEnabled =
+    formData.getAll("viz_placement_enabled").includes("true");
   const vizQuestion2 = String(formData.get("viz_question_2") || "").trim();
   const vizQuestion3 = String(formData.get("viz_question_3") || "").trim();
   const isPublished = formData.get("is_published") === "on";
@@ -212,6 +214,7 @@ export async function saveGuide(formData: FormData) {
       steps,
       viz_reference_image_path: vizReferencePathValue,
       viz_dimensions: vizDimensions || null,
+      viz_placement_enabled: vizPlacementEnabled,
       viz_question_2: vizQuestion2 || null,
       viz_question_3: vizQuestion3 || null,
       is_published: isPublished,
