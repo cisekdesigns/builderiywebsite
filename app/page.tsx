@@ -7,7 +7,7 @@ export default function Home() {
 
       <section className="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-7xl items-center px-6 py-6 sm:px-10 lg:px-16 lg:py-6">
         <div className="grid w-full gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl max-sm:order-2">
             <p className="mb-5 text-xs uppercase tracking-[0.28em] text-[#9A9A9A]">
               Full Step-by-Step Build Plans in Minutes
             </p>
@@ -60,7 +60,7 @@ export default function Home() {
 
           </div>
 
-          <div className="mx-auto flex w-full justify-center lg:justify-end">
+          <div className="mx-auto flex w-full justify-center max-sm:order-1 lg:justify-end">
             <div className="rounded-[2.0rem] border border-[#2A2A2A] bg-[#121212] p-3 shadow-[0_20px_60px_rgba(31,30,28,0.08)]">
             <div className="relative w-[290px] overflow-hidden rounded-[1.0rem] border border-[#2A2A2A] bg-black sm:w-[320px]">
                 <video
