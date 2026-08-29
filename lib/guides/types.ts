@@ -29,6 +29,7 @@ export type GuideRow = {
   tools: GuideTool[];
   steps: GuideStep[];
   viz_reference_image_path: string | null;
+  viz_dimensions: string | null;
   viz_question_2: string | null;
   viz_question_3: string | null;
   is_published: boolean;
