@@ -41,6 +41,7 @@ type NewGuideDraft = {
     materialsText: string;
     toolsText: string;
   }>;
+  viz_dimensions: string;
   viz_question_2: string;
   viz_question_3: string;
   is_published: boolean;
@@ -100,6 +101,9 @@ export default function GuideForm({
 
   const [title, setTitle] = useState(guide?.title || "");
   const [overview, setOverview] = useState(guide?.overview || "");
+  const [vizDimensions, setVizDimensions] = useState(
+    guide?.viz_dimensions || "",
+  );
   const [vizQuestion2, setVizQuestion2] = useState(guide?.viz_question_2 || "");
   const [vizQuestion3, setVizQuestion3] = useState(guide?.viz_question_3 || "");
   const [isPublished, setIsPublished] = useState(Boolean(guide?.is_published));
@@ -186,6 +190,7 @@ export default function GuideForm({
     if (draft) {
       setTitle(draft.title || "");
       setOverview(draft.overview || "");
+      setVizDimensions(draft.viz_dimensions || "");
       setVizQuestion2(draft.viz_question_2 || "");
       setVizQuestion3(draft.viz_question_3 || "");
       setIsPublished(Boolean(draft.is_published));
@@ -242,6 +247,7 @@ export default function GuideForm({
         materialsText: s.materialsText,
         toolsText: s.toolsText,
       })),
+      viz_dimensions: vizDimensions,
       viz_question_2: vizQuestion2,
       viz_question_3: vizQuestion3,
       is_published: isPublished,
@@ -261,6 +267,7 @@ export default function GuideForm({
     materials,
     tools,
     steps,
+    vizDimensions,
     vizQuestion2,
     vizQuestion3,
     isPublished,
@@ -681,6 +688,16 @@ export default function GuideForm({
               className="mt-3 h-40 w-full rounded-xl object-cover"
             />
           ) : null}
+        </label>
+        <label className="block">
+          <span className="text-sm text-[#9A9A9A]">PROJECT DIMENSIONS</span>
+          <textarea
+            name="viz_dimensions"
+            rows={4}
+            value={vizDimensions}
+            onChange={(e) => setVizDimensions(e.target.value)}
+            className="mt-2 w-full rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] px-4 py-3 text-[#EDEBE4] outline-none focus:border-[#D8D6D1]"
+          />
         </label>
         <div className="rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] p-4">
           <p className="text-xs uppercase tracking-[0.18em] text-[#9A9A9A]">
