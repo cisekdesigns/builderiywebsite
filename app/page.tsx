@@ -1,4 +1,5 @@
 import SiteHeader from "@/components/SiteHeader";
+import TryBuilderiYButton from "@/components/TryBuilderiYButton";
 
 export default function Home() {
   return (
@@ -48,13 +49,10 @@ export default function Home() {
               </div>
 
               <div className="mt-6 flex justify-center">
-                <a
-                  href="https://apps.apple.com/us/app/builderiy/id6783095666"
+                <TryBuilderiYButton
                   className="inline-flex items-center justify-center rounded-2xl border border-[#D8D6D1] bg-[#E6E1D8] px-10 py-4 text-lg font-semibold text-[#1F1E1C] backdrop-blur-md shadow-[0_12px_35px_rgba(0,0,0,0.35)] transition hover:bg-[#EDEBE4]"
                   style={{ fontFamily: "Aboreto, serif" }}
-                >
-                  Try BuilderiY Now
-                </a>
+                />
               </div>
             </div>
 
