@@ -57,7 +57,7 @@ export default function Home() {
                   <img
                     src="/app-store-badge.svg"
                     alt="Download BuilderiY on the App Store"
-                    className="h-12 w-auto"
+                    className="h-[54px] w-auto sm:h-12"
                   />
                 </a>
                 <a
