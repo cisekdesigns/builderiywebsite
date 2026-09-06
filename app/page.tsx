@@ -1,5 +1,4 @@
 import SiteHeader from "@/components/SiteHeader";
-import TryBuilderiYButton from "@/components/TryBuilderiYButton";
 
 export default function Home() {
   return (
@@ -48,11 +47,31 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-center">
-                <TryBuilderiYButton
-                  className="inline-flex items-center justify-center rounded-2xl border border-[#D8D6D1] bg-[#E6E1D8] px-10 py-4 text-lg font-semibold text-[#1F1E1C] backdrop-blur-md shadow-[0_12px_35px_rgba(0,0,0,0.35)] transition hover:bg-[#EDEBE4]"
-                  style={{ fontFamily: "Aboreto, serif" }}
-                />
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <a
+                  href="https://apps.apple.com/us/app/builderiy/id6783095666"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/app-store-badge.svg"
+                    alt="Download BuilderiY on the App Store"
+                    className="h-12 w-auto"
+                  />
+                </a>
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.builderiy.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/google-play-badge.png"
+                    alt="Get BuilderiY on Google Play"
+                    className="h-12 w-auto"
+                  />
+                </a>
               </div>
             </div>
 
