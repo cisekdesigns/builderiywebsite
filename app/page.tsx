@@ -157,6 +157,14 @@ export default function Home() {
           <div className="mt-8 grid max-h-[22rem] gap-4 overflow-y-auto pr-1">
             <div className="rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] p-5">
               <p className="text-xs uppercase tracking-[0.18em] text-[#9A9A9A]">
+                September 2026
+              </p>
+              <p className="mt-2 text-base text-[#FFFFFF]">
+                Introducing Featured Real: Discover real design inspiration on our new Featured Real board. Every photo features real design, with no AI-generated images.
+              </p>
+            </div>
+            <div className="rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] p-5">
+              <p className="text-xs uppercase tracking-[0.18em] text-[#9A9A9A]">
                 August 2026
               </p>
               <p className="mt-2 text-base text-[#FFFFFF]">
