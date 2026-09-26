@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
 const APPLE_APP_STORE_URL =
@@ -20,6 +20,7 @@ export default function TryBuilderiYButton({
   const [open, setOpen] = useState(false);
   const titleId = useId();
   const descriptionId = useId();
+  const scrollYRef = useRef(0);
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -32,13 +33,43 @@ export default function TryBuilderiYButton({
       }
     };
 
+    scrollYRef.current = window.scrollY;
+
+    const { style: bodyStyle } = document.body;
+    const { style: htmlStyle } = document.documentElement;
+    const previous = {
+      bodyOverflow: bodyStyle.overflow,
+      bodyPosition: bodyStyle.position,
+      bodyTop: bodyStyle.top,
+      bodyLeft: bodyStyle.left,
+      bodyRight: bodyStyle.right,
+      bodyWidth: bodyStyle.width,
+      htmlOverflow: htmlStyle.overflow,
+    };
+
+    // iOS Safari ignores overflow:hidden alone; pin the body while open.
+    htmlStyle.overflow = "hidden";
+    bodyStyle.overflow = "hidden";
+    bodyStyle.position = "fixed";
+    bodyStyle.top = `-${scrollYRef.current}px`;
+    bodyStyle.left = "0";
+    bodyStyle.right = "0";
+    bodyStyle.width = "100%";
+
     document.addEventListener("keydown", onKeyDown);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = previousOverflow;
+
+      htmlStyle.overflow = previous.htmlOverflow;
+      bodyStyle.overflow = previous.bodyOverflow;
+      bodyStyle.position = previous.bodyPosition;
+      bodyStyle.top = previous.bodyTop;
+      bodyStyle.left = previous.bodyLeft;
+      bodyStyle.right = previous.bodyRight;
+      bodyStyle.width = previous.bodyWidth;
+
+      window.scrollTo(0, scrollYRef.current);
     };
   }, [open, close]);
 
@@ -51,7 +82,14 @@ export default function TryBuilderiYButton({
       {open ? (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-8"
-          onClick={close}
+          style={{ touchAction: "none" }}
+          onPointerDown={(event) => {
+            // Close only when the backdrop itself is pressed (not the dialog).
+            // pointerdown is more reliable than click on mobile Safari.
+            if (event.target === event.currentTarget) {
+              close();
+            }
+          }}
         >
           <div
             role="dialog"
@@ -59,7 +97,8 @@ export default function TryBuilderiYButton({
             aria-labelledby={titleId}
             aria-describedby={descriptionId}
             className="relative w-full max-w-sm rounded-[1.75rem] border border-[#2A2A2A] bg-[#121212] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
-            onClick={(event) => event.stopPropagation()}
+            style={{ touchAction: "auto" }}
+            onPointerDown={(event) => event.stopPropagation()}
           >
             <button
               type="button"
