@@ -11,6 +11,16 @@ import {
 } from "@/lib/guides/paths";
 import { uniqueSlug } from "@/lib/guides/storage";
 import {
+  ALLOWED_STEP_VIDEO_TYPES,
+  GUIDE_STEP_VIDEOS_BUCKET,
+  isSafeStepVideoPath,
+  isUuid,
+  MAX_STEP_VIDEO_BYTES,
+  safeVideoFileName,
+  stepVideoObjectPath,
+  videoExtension,
+} from "@/lib/guides/step-videos";
+import {
   GUIDE_IMAGES_BUCKET,
   type GuideMaterial,
   type GuideStep,
@@ -40,6 +50,7 @@ function parseTools(raw: string): GuideTool[] {
 }
 
 function parseStepsMeta(raw: string): Array<{
+  id?: string;
   title: string;
   estimatedTime: string;
   instructions: string;
@@ -48,6 +59,213 @@ function parseStepsMeta(raw: string): Array<{
   existingImagePath: string;
 }> {
   return JSON.parse(raw || "[]");
+}
+
+const VIDEO_STORAGE_NOT_READY =
+  "Step video storage is not set up on staging yet. Save the Guide without a video, or apply the staging SQL first.";
+
+type VideoOp = {
+  stepId: string;
+  op: "upsert" | "remove";
+  storagePath?: string;
+  fileName?: string;
+  contentType?: string;
+};
+
+function isMissingVideoStorage(error: {
+  code?: string;
+  message?: string;
+} | null): boolean {
+  if (!error) return false;
+  const message = `${error.code || ""} ${error.message || ""}`.toLowerCase();
+  return (
+    error.code === "PGRST205" ||
+    error.code === "42P01" ||
+    (message.includes("guide_step_videos") &&
+      (message.includes("schema cache") ||
+        message.includes("does not exist") ||
+        message.includes("could not find"))) ||
+    message.includes("bucket not found")
+  );
+}
+
+function stepIdForSave(raw: string | undefined): string {
+  const value = String(raw || "").trim();
+  return isUuid(value) ? value : randomUUID();
+}
+
+export async function getStepVideoAdminState(guideId: string | null): Promise<{
+  storageReady: boolean;
+  videos: Array<{ stepId: string; fileName: string }>;
+}> {
+  const { supabase } = await requireGuideAdmin();
+  if (!guideId || !isUuid(guideId)) {
+    const { error } = await supabase
+      .from("guide_step_videos")
+      .select("step_id", { head: true, count: "exact" });
+    return { storageReady: !error, videos: [] };
+  }
+
+  const { data, error } = await supabase
+    .from("guide_step_videos")
+    .select("step_id, file_name")
+    .eq("guide_id", guideId);
+  if (error) {
+    return { storageReady: false, videos: [] };
+  }
+
+  return {
+    storageReady: true,
+    videos: (data || []).map((row) => ({
+      stepId: String(row.step_id),
+      fileName: String(row.file_name),
+    })),
+  };
+}
+
+export async function createStepVideoUploadUrl(input: {
+  guideId: string;
+  stepId: string;
+  fileName: string;
+  contentType: string;
+  fileSize: number;
+}): Promise<{ ok: true; path: string; token: string } | { ok: false; error: string }> {
+  const { supabase } = await requireGuideAdmin();
+  const guideId = String(input.guideId || "").trim();
+  const stepId = String(input.stepId || "").trim();
+  const contentType = String(input.contentType || "").trim();
+  const fileSize = Number(input.fileSize);
+
+  if (!isUuid(guideId) || !isUuid(stepId)) {
+    return { ok: false, error: "The step video could not be attached to this step." };
+  }
+  if (!ALLOWED_STEP_VIDEO_TYPES.has(contentType)) {
+    return { ok: false, error: "Please upload an MP4 or MOV video." };
+  }
+  if (!Number.isFinite(fileSize) || fileSize <= 0 || fileSize > MAX_STEP_VIDEO_BYTES) {
+    return { ok: false, error: "Step videos must be 100 MB or smaller." };
+  }
+
+  const ext = videoExtension(contentType);
+  if (!ext) {
+    return { ok: false, error: "Please upload an MP4 or MOV video." };
+  }
+
+  const path = stepVideoObjectPath(guideId, stepId, randomUUID(), ext);
+  const { data, error } = await supabase.storage
+    .from(GUIDE_STEP_VIDEOS_BUCKET)
+    .createSignedUploadUrl(path, { upsert: false });
+
+  if (error || !data?.token) {
+    if (isMissingVideoStorage(error)) {
+      return { ok: false, error: VIDEO_STORAGE_NOT_READY };
+    }
+    return {
+      ok: false,
+      error: "The step video could not be prepared for upload.",
+    };
+  }
+
+  return { ok: true, path, token: data.token };
+}
+
+function parseVideoOps(raw: string): VideoOp[] {
+  const items = JSON.parse(raw || "[]") as VideoOp[];
+  if (!Array.isArray(items)) return [];
+  return items;
+}
+
+async function applyStepVideoOps(
+  supabase: Awaited<ReturnType<typeof requireGuideAdmin>>["supabase"],
+  guideId: string,
+  savedStepIds: Set<string>,
+  raw: string,
+) {
+  const ops = parseVideoOps(raw);
+  if (ops.length === 0) return;
+
+  for (const op of ops) {
+    const stepId = String(op.stepId || "").trim();
+    if (!isUuid(stepId)) {
+      throw new Error("The step video could not be attached to this step.");
+    }
+
+    if (op.op === "remove") {
+      const { data: existing, error: readError } = await supabase
+        .from("guide_step_videos")
+        .select("storage_path")
+        .eq("guide_id", guideId)
+        .eq("step_id", stepId)
+        .maybeSingle();
+      if (readError) {
+        if (isMissingVideoStorage(readError)) throw new Error(VIDEO_STORAGE_NOT_READY);
+        throw new Error(readError.message);
+      }
+      if (existing?.storage_path) {
+        await supabase.storage
+          .from(GUIDE_STEP_VIDEOS_BUCKET)
+          .remove([String(existing.storage_path)]);
+      }
+      const { error: deleteError } = await supabase
+        .from("guide_step_videos")
+        .delete()
+        .eq("guide_id", guideId)
+        .eq("step_id", stepId);
+      if (deleteError && !isMissingVideoStorage(deleteError)) {
+        throw new Error(deleteError.message);
+      }
+      continue;
+    }
+
+    if (op.op !== "upsert") continue;
+    if (!savedStepIds.has(stepId)) {
+      throw new Error("Add a title or instructions before attaching a step video.");
+    }
+    const storagePath = String(op.storagePath || "").trim();
+    const contentType = String(op.contentType || "").trim();
+    if (
+      !isSafeStepVideoPath(guideId, stepId, storagePath) ||
+      !ALLOWED_STEP_VIDEO_TYPES.has(contentType)
+    ) {
+      throw new Error("The step video upload was rejected.");
+    }
+
+    const { data: existing, error: readError } = await supabase
+      .from("guide_step_videos")
+      .select("storage_path")
+      .eq("guide_id", guideId)
+      .eq("step_id", stepId)
+      .maybeSingle();
+    if (readError) {
+      if (isMissingVideoStorage(readError)) throw new Error(VIDEO_STORAGE_NOT_READY);
+      throw new Error(readError.message);
+    }
+
+    const row = {
+      guide_id: guideId,
+      step_id: stepId,
+      storage_path: storagePath,
+      file_name: safeVideoFileName(String(op.fileName || "video")),
+      content_type: contentType,
+      updated_at: new Date().toISOString(),
+    };
+    const { error: writeError } = existing
+      ? await supabase
+          .from("guide_step_videos")
+          .update(row)
+          .eq("guide_id", guideId)
+          .eq("step_id", stepId)
+      : await supabase.from("guide_step_videos").insert(row);
+    if (writeError) {
+      if (isMissingVideoStorage(writeError)) throw new Error(VIDEO_STORAGE_NOT_READY);
+      throw new Error(writeError.message);
+    }
+
+    const previousPath = String(existing?.storage_path || "");
+    if (previousPath && previousPath !== storagePath) {
+      await supabase.storage.from(GUIDE_STEP_VIDEOS_BUCKET).remove([previousPath]);
+    }
+  }
 }
 
 const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png"]);
@@ -118,7 +336,9 @@ export async function saveGuide(formData: FormData) {
     );
   }
 
-  const guideId = existingId || randomUUID();
+  const proposedNewId = String(formData.get("new_guide_id") || "").trim();
+  const guideId =
+    existingId || (isUuid(proposedNewId) ? proposedNewId : randomUUID());
   const slug = uniqueSlug(title, existingSlug);
   const materials = parseMaterials(String(formData.get("materials_json") || "[]"));
   const tools = parseTools(String(formData.get("tools_json") || "[]"));
@@ -187,6 +407,7 @@ export async function saveGuide(formData: FormData) {
       }
 
       steps.push({
+        id: stepIdForSave(meta.id),
         title: titleStep || `Step ${i + 1}`,
         estimatedTime: String(meta.estimatedTime || "").trim(),
         instructions: String(meta.instructions || "").trim(),
@@ -231,6 +452,13 @@ export async function saveGuide(formData: FormData) {
       });
       if (error) throw new Error(error.message);
     }
+
+    await applyStepVideoOps(
+      supabase,
+      guideId,
+      new Set(steps.map((step) => step.id).filter((id): id is string => Boolean(id))),
+      String(formData.get("step_videos_json") || "[]"),
+    );
 
     if (isFeatured) {
       if (!isPublished) {
