@@ -11,6 +11,7 @@ export type GuideTool = {
 };
 
 export type GuideStep = {
+  id?: string;
   title: string;
   estimatedTime: string;
   instructions: string;

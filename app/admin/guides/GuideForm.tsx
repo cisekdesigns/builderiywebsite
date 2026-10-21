@@ -1,9 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { saveGuide } from "@/app/admin/guides/actions";
-import { GLOBAL_VIZ_QUESTION_1, type GuideRow } from "@/lib/guides/types";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  createStepVideoUploadUrl,
+  getStepVideoAdminState,
+  saveGuide,
+} from "@/app/admin/guides/actions";
 import { publicGuideImageUrl } from "@/lib/guides/paths";
+import {
+  ALLOWED_STEP_VIDEO_TYPES,
+  GUIDE_STEP_VIDEOS_BUCKET,
+  isUuid,
+  MAX_STEP_VIDEO_BYTES,
+  safeVideoFileName,
+} from "@/lib/guides/step-videos";
+import { GLOBAL_VIZ_QUESTION_1, type GuideRow } from "@/lib/guides/types";
+import { createClient } from "@/lib/supabase/client";
 
 const NEW_GUIDE_DRAFT_KEY = "builderiy.admin.newGuideDraft.v1";
 
@@ -20,6 +32,7 @@ type ToolDraft = {
 };
 
 type StepDraft = {
+  id: string;
   title: string;
   estimatedTime: string;
   instructions: string;
@@ -27,6 +40,10 @@ type StepDraft = {
   toolsText: string;
   existingImagePath: string;
   previewUrl: string | null;
+  existingVideoName: string | null;
+  pendingVideoFile: File | null;
+  removeExistingVideo: boolean;
+  videoPickerKey: number;
 };
 
 type NewGuideDraft = {
@@ -35,6 +52,7 @@ type NewGuideDraft = {
   materials: MaterialDraft[];
   tools: ToolDraft[];
   steps: Array<{
+    id?: string;
     title: string;
     estimatedTime: string;
     instructions: string;
@@ -56,8 +74,9 @@ function emptyTool(): ToolDraft {
   return { name: "", quantity: "", product_url: "" };
 }
 
-function emptyStep(): StepDraft {
+function blankStep(id = ""): StepDraft {
   return {
+    id,
     title: "",
     estimatedTime: "",
     instructions: "",
@@ -65,6 +84,31 @@ function emptyStep(): StepDraft {
     toolsText: "",
     existingImagePath: "",
     previewUrl: null,
+    existingVideoName: null,
+    pendingVideoFile: null,
+    removeExistingVideo: false,
+    videoPickerKey: 0,
+  };
+}
+
+function emptyStep(): StepDraft {
+  return blankStep(crypto.randomUUID());
+}
+
+function stepFromGuide(step: GuideRow["steps"][number]): StepDraft {
+  return {
+    id: step.id && isUuid(step.id) ? step.id : "",
+    title: step.title || "",
+    estimatedTime: step.estimatedTime || "",
+    instructions: step.instructions || "",
+    materialsText: (step.materials || []).join(", "),
+    toolsText: (step.tools || []).join(", "),
+    existingImagePath: step.image_path || "",
+    previewUrl: publicGuideImageUrl(step.image_path),
+    existingVideoName: null,
+    pendingVideoFile: null,
+    removeExistingVideo: false,
+    videoPickerKey: 0,
   };
 }
 
@@ -131,18 +175,13 @@ export default function GuideForm({
   );
 
   const [steps, setSteps] = useState<StepDraft[]>(
-    guide?.steps?.length
-      ? guide.steps.map((s) => ({
-          title: s.title || "",
-          estimatedTime: s.estimatedTime || "",
-          instructions: s.instructions || "",
-          materialsText: (s.materials || []).join(", "),
-          toolsText: (s.tools || []).join(", "),
-          existingImagePath: s.image_path || "",
-          previewUrl: publicGuideImageUrl(s.image_path),
-        }))
-      : [emptyStep()],
+    guide?.steps?.length ? guide.steps.map(stepFromGuide) : [blankStep()],
   );
+  const [removedVideoStepIds, setRemovedVideoStepIds] = useState<string[]>([]);
+  const [videoStorageReady, setVideoStorageReady] = useState(false);
+  const videoSubmitReady = useRef(false);
+  const newGuideIdRef = useRef("");
+  const stepsJsonRef = useRef<HTMLInputElement>(null);
 
   const [heroPreview, setHeroPreview] = useState<string | null>(
     publicGuideImageUrl(guide?.hero_image_path),
@@ -162,6 +201,11 @@ export default function GuideForm({
       'input[type="file"]',
     );
     for (const input of inputs) {
+      const isImageInput =
+        input.name === "hero_image" ||
+        input.name === "viz_reference_image" ||
+        input.name.startsWith("step_image_");
+      if (!isImageInput) continue;
       const file = input.files?.[0];
       if (!file || file.size === 0) continue;
       if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
@@ -172,6 +216,125 @@ export default function GuideForm({
       }
     }
     return null;
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+    getStepVideoAdminState(guide?.id || null).then((result) => {
+      if (cancelled) return;
+      setVideoStorageReady(result.storageReady);
+      if (result.videos.length === 0) return;
+      setSteps((current) =>
+        current.map((step) => {
+          const match = result.videos.find((video) => video.stepId === step.id);
+          return match ? { ...step, existingVideoName: match.fileName } : step;
+        }),
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [guide?.id]);
+
+  function ensureStepId(step: StepDraft): StepDraft {
+    return step.id && isUuid(step.id)
+      ? step
+      : { ...step, id: crypto.randomUUID() };
+  }
+
+  async function prepareStepVideos(form: HTMLFormElement) {
+    const prepared = steps.map(ensureStepId);
+    let guideId = guide?.id || "";
+    if (!guideId) {
+      if (!isUuid(newGuideIdRef.current)) {
+        newGuideIdRef.current = crypto.randomUUID();
+      }
+      guideId = newGuideIdRef.current;
+      const newGuideInput = form.querySelector<HTMLInputElement>(
+        'input[name="new_guide_id"]',
+      );
+      if (newGuideInput) newGuideInput.value = guideId;
+    }
+
+    const ops: Array<{
+      stepId: string;
+      op: "upsert" | "remove";
+      storagePath?: string;
+      fileName?: string;
+      contentType?: string;
+    }> = [];
+
+    for (const stepId of removedVideoStepIds) {
+      if (isUuid(stepId)) ops.push({ stepId, op: "remove" });
+    }
+
+    for (const step of prepared) {
+      const willSave =
+        step.title.trim().length > 0 || step.instructions.trim().length > 0;
+      if (step.removeExistingVideo && step.existingVideoName) {
+        ops.push({ stepId: step.id, op: "remove" });
+      }
+      const file = step.pendingVideoFile;
+      if (!file) continue;
+      if (!willSave) {
+        throw new Error(
+          "Add a title or instructions before attaching a step video.",
+        );
+      }
+      if (!ALLOWED_STEP_VIDEO_TYPES.has(file.type)) {
+        throw new Error("Please upload an MP4 or MOV video.");
+      }
+      if (file.size > MAX_STEP_VIDEO_BYTES) {
+        throw new Error("Step videos must be 100 MB or smaller.");
+      }
+
+      const ticket = await createStepVideoUploadUrl({
+        guideId,
+        stepId: step.id,
+        fileName: safeVideoFileName(file.name),
+        contentType: file.type,
+        fileSize: file.size,
+      });
+      if (!ticket.ok) throw new Error(ticket.error);
+
+      const supabase = createClient();
+      const { error } = await supabase.storage
+        .from(GUIDE_STEP_VIDEOS_BUCKET)
+        .uploadToSignedUrl(ticket.path, ticket.token, file, {
+          contentType: file.type,
+        });
+      if (error) {
+        throw new Error("The step video could not be uploaded.");
+      }
+      ops.push({
+        stepId: step.id,
+        op: "upsert",
+        storagePath: ticket.path,
+        fileName: safeVideoFileName(file.name),
+        contentType: file.type,
+      });
+    }
+
+    const stepsInput = form.querySelector<HTMLInputElement>(
+      'input[name="steps_json"]',
+    );
+    if (stepsInput) {
+      stepsInput.value = JSON.stringify(
+        prepared.map((step) => ({
+          id: step.id,
+          title: step.title,
+          estimatedTime: step.estimatedTime,
+          instructions: step.instructions,
+          materialsText: step.materialsText,
+          toolsText: step.toolsText,
+          existingImagePath: step.existingImagePath,
+        })),
+      );
+    }
+    const videosInput = form.querySelector<HTMLInputElement>(
+      'input[name="step_videos_json"]',
+    );
+    if (videosInput) videosInput.value = JSON.stringify(ops);
   }
 
   // Editing an existing Guide (including after a successful create redirect):
@@ -216,15 +379,14 @@ export default function GuideForm({
       setSteps(
         draft.steps?.length
           ? draft.steps.map((s) => ({
+              ...blankStep(s.id && isUuid(s.id) ? s.id : ""),
               title: s.title || "",
               estimatedTime: s.estimatedTime || "",
               instructions: s.instructions || "",
               materialsText: s.materialsText || "",
               toolsText: s.toolsText || "",
-              existingImagePath: "",
-              previewUrl: null,
             }))
-          : [emptyStep()],
+          : [blankStep()],
       );
     }
 
@@ -241,6 +403,7 @@ export default function GuideForm({
       materials,
       tools,
       steps: steps.map((s) => ({
+        id: s.id,
         title: s.title,
         estimatedTime: s.estimatedTime,
         instructions: s.instructions,
@@ -280,6 +443,7 @@ export default function GuideForm({
     () =>
       JSON.stringify(
         steps.map((s) => ({
+          id: s.id,
           title: s.title,
           estimatedTime: s.estimatedTime,
           instructions: s.instructions,
@@ -291,27 +455,66 @@ export default function GuideForm({
     [steps],
   );
 
+  useEffect(() => {
+    if (stepsJsonRef.current) stepsJsonRef.current.value = stepsJson;
+  }, [stepsJson]);
+
   return (
     <form
       action={saveGuide}
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         const validationError = validateImageFiles(e.currentTarget);
         if (validationError) {
           e.preventDefault();
+          videoSubmitReady.current = false;
           setClientError(validationError);
           setPending(false);
           return;
         }
+
+        const needsVideoWork =
+          removedVideoStepIds.length > 0 ||
+          steps.some(
+            (step) => step.pendingVideoFile || step.removeExistingVideo,
+          );
+        if (needsVideoWork && !videoSubmitReady.current) {
+          e.preventDefault();
+          setPending(true);
+          setClientError(null);
+          try {
+            await prepareStepVideos(e.currentTarget);
+            videoSubmitReady.current = true;
+            e.currentTarget.requestSubmit();
+          } catch (err) {
+            videoSubmitReady.current = false;
+            setPending(false);
+            setClientError(
+              err instanceof Error
+                ? err.message
+                : "The step video could not be uploaded.",
+            );
+          }
+          return;
+        }
+
+        videoSubmitReady.current = false;
         setClientError(null);
         setPending(true);
       }}
       className="space-y-10"
     >
       {guide?.id ? <input type="hidden" name="id" value={guide.id} /> : null}
+      {!guide?.id ? <input type="hidden" name="new_guide_id" defaultValue="" /> : null}
       {guide?.slug ? <input type="hidden" name="slug" value={guide.slug} /> : null}
       <input type="hidden" name="materials_json" value={materialsJson} />
       <input type="hidden" name="tools_json" value={toolsJson} />
-      <input type="hidden" name="steps_json" value={stepsJson} />
+      <input
+        ref={stepsJsonRef}
+        type="hidden"
+        name="steps_json"
+        defaultValue={stepsJson}
+      />
+      <input type="hidden" name="step_videos_json" defaultValue="[]" />
       <input
         type="hidden"
         name="existing_hero_path"
@@ -554,16 +757,21 @@ export default function GuideForm({
         </div>
         {steps.map((step, index) => (
           <div
-            key={`step-${index}`}
+            key={step.id || `step-${index}`}
             className="space-y-3 rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] p-4"
           >
             <div className="flex items-center justify-between">
               <p className="text-sm text-[#9A9A9A]">Step {index + 1}</p>
               <button
                 type="button"
-                onClick={() =>
-                  setSteps((prev) => prev.filter((_, i) => i !== index))
-                }
+                onClick={() => {
+                  if (step.id && step.existingVideoName) {
+                    setRemovedVideoStepIds((current) =>
+                      current.includes(step.id) ? current : [...current, step.id],
+                    );
+                  }
+                  setSteps((prev) => prev.filter((_, i) => i !== index));
+                }}
                 className="text-sm text-[#9A9A9A]"
               >
                 Remove
@@ -593,6 +801,63 @@ export default function GuideForm({
                 className="h-36 w-full rounded-xl object-cover"
               />
             ) : null}
+            <div className="space-y-2">
+              <p className="text-sm text-[#9A9A9A]">Step video (optional)</p>
+              <input
+                key={step.videoPickerKey}
+                type="file"
+                accept="video/mp4,video/quicktime"
+                disabled={!videoStorageReady || pending}
+                className="block w-full text-sm text-[#EDEBE4] disabled:opacity-60"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  setSteps((prev) =>
+                    prev.map((row, i) =>
+                      i === index
+                        ? {
+                            ...row,
+                            pendingVideoFile: file,
+                            removeExistingVideo: false,
+                          }
+                        : row,
+                    ),
+                  );
+                }}
+              />
+              <p className="text-xs text-[#9A9A9A]">
+                {!videoStorageReady
+                  ? "Video upload is not available until staging storage is set up."
+                  : step.pendingVideoFile
+                    ? `Selected: ${step.pendingVideoFile.name}. Uploads when you save.`
+                    : step.removeExistingVideo
+                      ? "This video will be removed when you save."
+                      : step.existingVideoName
+                        ? `Current video: ${step.existingVideoName}`
+                        : "No video"}
+              </p>
+              {step.existingVideoName || step.pendingVideoFile ? (
+                <button
+                  type="button"
+                  className="text-sm text-[#9A9A9A]"
+                  onClick={() =>
+                    setSteps((prev) =>
+                      prev.map((row, i) =>
+                        i === index
+                          ? {
+                              ...row,
+                              pendingVideoFile: null,
+                              removeExistingVideo: Boolean(row.existingVideoName),
+                              videoPickerKey: row.videoPickerKey + 1,
+                            }
+                          : row,
+                      ),
+                    )
+                  }
+                >
+                  Remove video
+                </button>
+              ) : null}
+            </div>
             <input
               placeholder="Title"
               value={step.title}
