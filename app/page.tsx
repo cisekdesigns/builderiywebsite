@@ -7,7 +7,7 @@ export default function Home() {
 
       <section className="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-7xl items-center px-6 py-6 sm:px-10 lg:px-16 lg:py-6">
         <div className="grid w-full gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl max-sm:order-2">
             <p className="mb-5 text-xs uppercase tracking-[0.28em] text-[#9A9A9A]">
               Full Step-by-Step Build Plans in Minutes
             </p>
@@ -47,20 +47,37 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-center">
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                 <a
                   href="https://apps.apple.com/us/app/builderiy/id6783095666"
-                  className="inline-flex items-center justify-center rounded-2xl border border-[#D8D6D1] bg-[#E6E1D8] px-10 py-4 text-lg font-semibold text-[#1F1E1C] backdrop-blur-md shadow-[0_12px_35px_rgba(0,0,0,0.35)] transition hover:bg-[#EDEBE4]"
-                  style={{ fontFamily: "Aboreto, serif" }}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  Try BuilderiY Now
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/app-store-badge.svg"
+                    alt="Download BuilderiY on the App Store"
+                    className="h-[54px] w-auto sm:h-12"
+                  />
+                </a>
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.builderiy.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/google-play-badge.png"
+                    alt="Get BuilderiY on Google Play"
+                    className="h-12 w-auto"
+                  />
                 </a>
               </div>
             </div>
 
           </div>
 
-          <div className="mx-auto flex w-full justify-center lg:justify-end">
+          <div className="mx-auto flex w-full justify-center max-sm:order-1 lg:justify-end">
             <div className="rounded-[2.0rem] border border-[#2A2A2A] bg-[#121212] p-3 shadow-[0_20px_60px_rgba(31,30,28,0.08)]">
             <div className="relative w-[290px] overflow-hidden rounded-[1.0rem] border border-[#2A2A2A] bg-black sm:w-[320px]">
                 <video
@@ -138,6 +155,22 @@ export default function Home() {
           </div>
 
           <div className="mt-8 grid max-h-[22rem] gap-4 overflow-y-auto pr-1">
+            <div className="rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] p-5">
+              <p className="text-xs uppercase tracking-[0.18em] text-[#9A9A9A]">
+                September 2026
+              </p>
+              <p className="mt-2 text-base text-[#FFFFFF]">
+                Introducing Featured Real: Discover real design inspiration on our new Featured Real board. Every photo features real design, with no AI-generated images.
+              </p>
+            </div>
+            <div className="rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] p-5">
+              <p className="text-xs uppercase tracking-[0.18em] text-[#9A9A9A]">
+                August 2026
+              </p>
+              <p className="mt-2 text-base text-[#FFFFFF]">
+                BuilderiY Comes to Android: BuilderiY is now available on Google Play, bringing the full DIY project planning experience to both iPhone and Android.
+              </p>
+            </div>
             <div className="rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] p-5">
               <p className="text-xs uppercase tracking-[0.18em] text-[#9A9A9A]">
                 July 2026
