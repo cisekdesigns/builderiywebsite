@@ -481,10 +481,11 @@ export default function GuideForm({
           e.preventDefault();
           setPending(true);
           setClientError(null);
+          const form = e.currentTarget;
           try {
-            await prepareStepVideos(e.currentTarget);
+            await prepareStepVideos(form);
             videoSubmitReady.current = true;
-            e.currentTarget.requestSubmit();
+            form.requestSubmit();
           } catch (err) {
             videoSubmitReady.current = false;
             setPending(false);
