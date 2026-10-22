@@ -64,6 +64,7 @@ type NewGuideDraft = {
   viz_question_3: string;
   is_published: boolean;
   is_featured: boolean;
+  pro_exclusive: boolean;
 };
 
 function emptyMaterial(): MaterialDraft {
@@ -152,6 +153,9 @@ export default function GuideForm({
   const [vizQuestion3, setVizQuestion3] = useState(guide?.viz_question_3 || "");
   const [isPublished, setIsPublished] = useState(Boolean(guide?.is_published));
   const [isFeatured, setIsFeatured] = useState(Boolean(guide?.is_featured));
+  const [proExclusive, setProExclusive] = useState(
+    Boolean(guide?.pro_exclusive),
+  );
   const [draftReady, setDraftReady] = useState(!isNewGuide);
 
   const [materials, setMaterials] = useState<MaterialDraft[]>(
@@ -358,6 +362,7 @@ export default function GuideForm({
       setVizQuestion3(draft.viz_question_3 || "");
       setIsPublished(Boolean(draft.is_published));
       setIsFeatured(Boolean(draft.is_featured));
+      setProExclusive(Boolean(draft.pro_exclusive));
       setMaterials(
         draft.materials?.length
           ? draft.materials.map((m) => ({
@@ -415,6 +420,7 @@ export default function GuideForm({
       viz_question_3: vizQuestion3,
       is_published: isPublished,
       is_featured: isFeatured,
+      pro_exclusive: proExclusive,
     };
 
     try {
@@ -435,6 +441,7 @@ export default function GuideForm({
     vizQuestion3,
     isPublished,
     isFeatured,
+    proExclusive,
   ]);
 
   const materialsJson = useMemo(() => JSON.stringify(materials), [materials]);
@@ -995,6 +1002,18 @@ export default function GuideForm({
         <h2 className="text-xs uppercase tracking-[0.22em] text-[#9A9A9A]">
           Publishing
         </h2>
+        <label className="block">
+          <span className="text-sm text-[#9A9A9A]">Audience</span>
+          <select
+            name="pro_exclusive"
+            value={proExclusive ? "true" : "false"}
+            onChange={(e) => setProExclusive(e.target.value === "true")}
+            className="mt-2 w-full rounded-xl border border-[#2A2A2A] bg-[#1C1C1C] px-4 py-3 text-[#EDEBE4] outline-none focus:border-[#D8D6D1]"
+          >
+            <option value="false">Everyone</option>
+            <option value="true">Pro Only</option>
+          </select>
+        </label>
         <label className="flex items-center gap-3 text-sm text-[#EDEBE4]">
           <input
             type="checkbox"

@@ -35,6 +35,8 @@ export type GuideRow = {
   viz_question_3: string | null;
   is_published: boolean;
   is_featured: boolean;
+  /** False is Everyone. True is Pro Only. Omitted on older rows until loaded. */
+  pro_exclusive?: boolean;
   sort_order: number;
   created_at: string;
   updated_at: string;

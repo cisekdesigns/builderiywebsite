@@ -314,6 +314,7 @@ export async function saveGuide(formData: FormData) {
   const vizQuestion3 = String(formData.get("viz_question_3") || "").trim();
   const isPublished = formData.get("is_published") === "on";
   const isFeatured = formData.get("is_featured") === "on";
+  const proExclusive = formData.get("pro_exclusive") === "true";
   const existingSlug = String(formData.get("slug") || "").trim() || null;
   const existingHero = String(formData.get("existing_hero_path") || "").trim();
   const existingViz = String(
@@ -436,6 +437,7 @@ export async function saveGuide(formData: FormData) {
       viz_question_2: vizQuestion2 || null,
       viz_question_3: vizQuestion3 || null,
       is_published: isPublished,
+      pro_exclusive: proExclusive,
     };
 
     if (existingId) {
